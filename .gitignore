@@ -1,0 +1,21 @@
+# 构建产物与二进制
+*.exe
+*.rar
+*.zip
+python/dist/
+python/build/
+*.spec
+__pycache__/
+*.py[cod]
+
+# 本地检测记录（用户数据，不入库）
+*.xlsx
+
+# 旧方案归档（HTA/IExpress 实现，仅本机保留）
+legacy-hta/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
