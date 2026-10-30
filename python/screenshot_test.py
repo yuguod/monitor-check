@@ -1,20 +1,25 @@
 # -*- coding: utf-8 -*-
-"""启动 MonitorCheck.exe 并在白色/红色画面阶段各截屏一张, 用于可视化验证"""
+"""启动 exe 并在白色/红色画面阶段各截屏一张, 用于可视化验证。
+
+用法: python screenshot_test.py
+可用环境变量 MC_EXE 指定待测 exe。
+"""
 import subprocess
-import sys
 import time
 
 from PIL import ImageGrab
 
-BASE = r"C:\Users\yuguo\WorkBuddy\2026-09-03-20-07-00\monitor-check"
-exe = BASE + r"\MonitorCheck.exe"
+from _paths import find_exe, shot_path
+
+exe = find_exe()
+print("测试目标:", exe)
 
 p = subprocess.Popen([exe])
-time.sleep(4.0)  # 信息页 1.2s -> idx0 黑 -> ~3.2s 白
+time.sleep(4.0)  # 信息页 -> 黑 -> 白
 img = ImageGrab.grab()
-img.resize((img.width // 3, img.height // 3)).save(BASE + r"\python\shot_white.png")
-time.sleep(2.0)  # ~5.2s -> idx2 红
+img.resize((img.width // 3, img.height // 3)).save(shot_path("shot_white.png"))
+time.sleep(2.0)  # -> 红
 img = ImageGrab.grab()
-img.resize((img.width // 3, img.height // 3)).save(BASE + r"\python\shot_red.png")
+img.resize((img.width // 3, img.height // 3)).save(shot_path("shot_red.png"))
 p.kill()
 print("done, was_alive =", p.poll() is None)

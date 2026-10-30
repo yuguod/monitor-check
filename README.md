@@ -54,7 +54,7 @@ pyinstaller --onefile --noconsole --clean --icon icon.ico ^
 ```
 
 > `--exclude-module PIL` 必须保留：openpyxl 会条件性导入 Pillow，不排除会让 exe 多出约 7MB。
-> 也可以直接运行 `python\rebuild.bat`，但需把其中的 Python 路径改成本机虚拟环境路径。
+> 也可以直接运行 `python\rebuild.bat`：它优先使用 PATH 中的 `pyinstaller`，找不到时回退到常见虚拟环境路径，无需改脚本。
 
 ## 项目结构
 
@@ -65,8 +65,28 @@ monitor-check/
 │   ├── version_info.txt     # exe 版本资源（v3.1）
 │   ├── icon.ico             # 应用图标
 │   ├── rebuild.bat          # 一键重打包脚本
+│   ├── _paths.py            # 验证脚本共用的路径解析（无硬编码路径）
 │   └── verify_*.py          # 自动化验证脚本（截屏 / Excel）
 └── README.md
+```
+
+## 验证脚本（可选）
+
+`python/` 下的脚本用于回归验证，**不含任何硬编码绝对路径**，克隆到任意目录都能运行；待测 exe 默认取项目根目录下最新的 `MonitorCheck*.exe`，也可用环境变量指定。
+
+| 脚本 | 用途 |
+| --- | --- |
+| `screenshot_test.py` | 启动 exe，在黑 / 白画面阶段各截屏一张 |
+| `verify_v4.py` | 验证信息栏每 10 秒刷新，且不打断画面循环 |
+| `verify_xlsx.py` | 连跑两次，验证 Excel 新建 + 追加（临时开启记录，结束后自动还原配置与原有记录文件） |
+
+```bat
+rem 默认用最新的 MonitorCheck*.exe
+python python\verify_v4.py
+
+rem 或显式指定待测 exe
+set MC_EXE=D:\tools\MonitorCheck_v3.1.exe
+python python\verify_xlsx.py
 ```
 
 ## 版本历史
